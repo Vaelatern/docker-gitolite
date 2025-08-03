@@ -1,5 +1,13 @@
 #!/bin/sh
 
+(
+	exec 2>/dev/null
+	cd /etc/ssh/keys
+	for f in ssh_host_*_key; do
+		cp "$f" ../"$f"
+	done
+)
+
 # Generate new keys if they don't yet exist
 ssh-keygen -A
 
