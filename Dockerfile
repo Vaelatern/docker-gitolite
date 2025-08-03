@@ -1,10 +1,10 @@
-FROM alpine:3.10
+FROM docker.io/alpine:3.22
 
 # Install OpenSSH server and Gitolite
-# Unlock the automatically-created git user
 RUN set -x \
- && apk add --no-cache gitolite openssh \
- && passwd -u git
+ && apk add --no-cache gitolite openssh
+
+COPY sshd_config.d/*.conf /etc/ssh/sshd_config.d/
 
 # Volume used to store SSH host keys, generated on first run
 VOLUME /etc/ssh/keys
@@ -20,4 +20,4 @@ ENTRYPOINT ["/docker-entrypoint.sh"]
 EXPOSE 22
 
 # Default command is to run the SSH server
-CMD ["sshd"]
+CMD ["/usr/sbin/sshd", "-D"]
