@@ -23,6 +23,11 @@ ssh-keygen -A
 
 [ "${GIT_USER}" != "git" ] && adduser -D -h /var/lib/git "${GIT_USER}"
 
+# Useful dirs for customization
+for dir in commands hooks/repo-specific syntactic-sugar triggers VREF; do
+	[ ! -d "/var/lib/git/local/${dir}" ] && mkdir -p "/var/lib/git/local/${dir}"
+done
+
 # Fix permissions at every startup
 chown -R "${GIT_USER}:${GIT_USER}" "/var/lib/git"
 
@@ -48,9 +53,5 @@ if [ ! -f "/var/lib/git/.ssh/authorized_keys" ]; then
 else
   su - "${GIT_USER}" -c "gitolite setup"
 fi
-
-for dir in commands hookes/repo-specific syntactic-sugar triggers VREF; do
-	[ ! -d "/var/lib/git/local/${dir}" ] && mkdir -p "/var/lib/git/local/${dir}"
-done
 
 exec "$@"
