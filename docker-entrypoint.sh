@@ -21,25 +21,27 @@ ssh-keygen -A
 : ${GIT_USER:=git}
 : ${DEFAULT_BRANCH:=master}
 
-[ "${GIT_USER}" != "git" ] && adduser -D -h /var/lib/git "${GIT_USER}"
+[ "${GIT_USER}" == "git" ] && deluser "${GIT_USER}"
+adduser -S -D -h /var/lib/gitolite "${GIT_USER}"
+passwd -u "${GIT_USER}" # Remove pass, otherwise user is locked and no auth ever works
 
 # Useful dirs for customization
 for dir in commands hooks/repo-specific syntactic-sugar triggers VREF; do
-	[ ! -d "/var/lib/git/local/${dir}" ] && mkdir -p "/var/lib/git/local/${dir}"
+	[ ! -d "/var/lib/gitolite/local/${dir}" ] && mkdir -p "/var/lib/gitolite/local/${dir}"
 done
 
 # Fix permissions at every startup
-chown -R "${GIT_USER}:${GIT_USER}" "/var/lib/git"
+chown -R "${GIT_USER}:${GIT_USER}" "/var/lib/gitolite"
 
-[ ! -f "/var/lib/git/.gitconfig" ] && cat >"/var/lib/git/.gitconfig" <<EOF
+[ ! -f "/var/lib/gitolite/.gitconfig" ] && cat >"/var/lib/gitolite/.gitconfig" <<EOF
 [init]
   defaultBranch = ${DEFAULT_BRANCH}
 EOF
 
-[ -n "$GITOLITE_RC" ] && echo "$GITOLITE_RC" > /var/lib/git/.gitolite.rc
+[ -n "$GITOLITE_RC" ] && echo "$GITOLITE_RC" > /var/lib/gitolite/.gitolite.rc
 
-# Setup gitolite admin  
-if [ ! -f "/var/lib/git/.ssh/authorized_keys" ]; then
+# Setup gitolite admin
+if [ ! -f "/var/lib/gitolite/.ssh/authorized_keys" ]; then
   if [ -n "$SSH_KEY" ]; then
     [ -n "$SSH_KEY_NAME" ] || SSH_KEY_NAME=admin
     echo "$SSH_KEY" > "/tmp/$SSH_KEY_NAME.pub"

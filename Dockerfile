@@ -10,7 +10,7 @@ COPY sshd_config.d/*.conf /etc/ssh/sshd_config.d/
 VOLUME /etc/ssh/keys
 
 # Volume used to store all Gitolite data (keys, config and repositories), initialized on first run
-VOLUME /var/lib/git
+VOLUME /var/lib/gitolite
 
 # Entrypoint responsible for SSH host keys generation, and Gitolite data initialization
 COPY docker-entrypoint.sh /
