@@ -36,7 +36,7 @@ if [ ! -f "/var/lib/git/.ssh/authorized_keys" ]; then
   if [ -n "$SSH_KEY" ]; then
     [ -n "$SSH_KEY_NAME" ] || SSH_KEY_NAME=admin
     echo "$SSH_KEY" > "/tmp/$SSH_KEY_NAME.pub"
-    su - "${GIT_USER}" -c "gitolite setup -pk \"/tmp/$SSH_KEY_NAME.pub\""
+    su - "${GIT_USER}" -c "gitolite setup -pk '/tmp/${SSH_KEY_NAME}.pub'"
     rm "/tmp/$SSH_KEY_NAME.pub"
   else
     echo "You need to specify SSH_KEY on first run to setup gitolite"
