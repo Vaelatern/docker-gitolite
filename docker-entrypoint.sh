@@ -36,6 +36,8 @@ chown -R "${GIT_USER}:${GIT_USER}" "/var/lib/git"
   defaultBranch = ${DEFAULT_BRANCH}
 EOF
 
+[ -n "$GITOLITE_RC" ] && echo "$GITOLITE_RC" > /var/lib/git/.gitolite.rc
+
 # Setup gitolite admin  
 if [ ! -f "/var/lib/git/.ssh/authorized_keys" ]; then
   if [ -n "$SSH_KEY" ]; then
