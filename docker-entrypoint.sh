@@ -22,7 +22,8 @@ ssh-keygen -A
 : ${DEFAULT_BRANCH:=master}
 
 [ "${GIT_USER}" == "git" ] && deluser "${GIT_USER}"
-adduser -S -D -h /var/lib/gitolite "${GIT_USER}"
+[ "${GIT_USER}" == "git" ] || addgroup -S "${GIT_USER}"
+adduser -S -D -h /var/lib/gitolite -s /bin/sh "${GIT_USER}"
 passwd -u "${GIT_USER}" # Remove pass, otherwise user is locked and no auth ever works
 
 # Useful dirs for customization
