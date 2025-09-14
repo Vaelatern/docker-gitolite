@@ -59,4 +59,12 @@ else
   su - "${GIT_USER}" -c "gitolite setup"
 fi
 
+[ -d /docker-entrypoint.d ] && for file in /docker-entrypoint.d/*.sh; do
+	if [ -x "$file" ]; then
+		"${file}"
+	else
+		. "${file}"
+	fi
+done
+
 exec "$@"
