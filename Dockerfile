@@ -4,6 +4,10 @@ FROM docker.io/alpine:3.22
 RUN set -x \
  && apk add --no-cache gitolite openssh
 
+# Let us run curl in our hooks
+RUN set -x \
+ && apk add --no-cache curl
+
 COPY sshd_config.d/*.conf /etc/ssh/sshd_config.d/
 
 # Volume used to store SSH host keys, generated on first run
