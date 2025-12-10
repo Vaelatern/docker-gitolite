@@ -62,7 +62,7 @@ fi
 [ -d /docker-entrypoint.d ] && for file in /docker-entrypoint.d/*.sh; do
 	if [ -x "$file" ]; then
 		"${file}"
-	else
+	elif [ -f "$file" -a -r "$file" ]; then
 		. "${file}"
 	fi
 done
