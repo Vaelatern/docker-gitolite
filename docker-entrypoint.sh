@@ -1,5 +1,13 @@
 #!/bin/sh
 
+[ -d /docker-entrypoint.d/stage1 ] && for file in /docker-entrypoint.d/stage1/*.sh; do
+	if [ -x "$file" ]; then
+		"${file}"
+	elif [ -f "$file" -a -r "$file" ]; then
+		. "${file}"
+	fi
+done
+
 (
 	exec 2>/dev/null
 	cd /etc/ssh/keys
@@ -18,6 +26,15 @@ ssh-keygen -A
 	done
 )
 
+[ -d /docker-entrypoint.d/stage2 ] && for file in /docker-entrypoint.d/stage2/*.sh; do
+	if [ -x "$file" ]; then
+		"${file}"
+	elif [ -f "$file" -a -r "$file" ]; then
+		. "${file}"
+	fi
+done
+
+
 : ${GIT_USER:=git}
 : ${DEFAULT_BRANCH:=master}
 
@@ -25,6 +42,14 @@ ssh-keygen -A
 [ "${GIT_USER}" == "git" ] || addgroup -S "${GIT_USER}"
 adduser -S -D -h /var/lib/gitolite -s /bin/sh "${GIT_USER}"
 passwd -u "${GIT_USER}" # Remove pass, otherwise user is locked and no auth ever works
+
+[ -d /docker-entrypoint.d/stage3 ] && for file in /docker-entrypoint.d/stage3/*.sh; do
+	if [ -x "$file" ]; then
+		"${file}"
+	elif [ -f "$file" -a -r "$file" ]; then
+		. "${file}"
+	fi
+done
 
 # Useful dirs for customization
 for dir in commands hooks/repo-specific syntactic-sugar triggers VREF; do
@@ -40,6 +65,14 @@ chown -R "${GIT_USER}:${GIT_USER}" "/var/lib/gitolite"
 EOF
 
 [ -n "$GITOLITE_RC" ] && echo "$GITOLITE_RC" > /var/lib/gitolite/.gitolite.rc
+
+[ -d /docker-entrypoint.d/stage4 ] && for file in /docker-entrypoint.d/stage4/*.sh; do
+	if [ -x "$file" ]; then
+		"${file}"
+	elif [ -f "$file" -a -r "$file" ]; then
+		. "${file}"
+	fi
+done
 
 # Setup gitolite admin
 if [ ! -f "/var/lib/gitolite/.ssh/authorized_keys" ]; then
@@ -59,6 +92,7 @@ else
   su - "${GIT_USER}" -c "gitolite setup"
 fi
 
+# Ignore stages. This time it's just a matter of doing it.
 [ -d /docker-entrypoint.d ] && for file in /docker-entrypoint.d/*.sh; do
 	if [ -x "$file" ]; then
 		"${file}"

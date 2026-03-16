@@ -1,4 +1,4 @@
-FROM docker.io/alpine:3.22
+FROM docker.io/alpine:3.23
 
 # Install OpenSSH server and Gitolite
 RUN set -x \
