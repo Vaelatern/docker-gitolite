@@ -4,9 +4,9 @@ FROM docker.io/alpine:3.23
 RUN set -x \
  && apk add --no-cache gitolite openssh
 
-# Let us run curl in our hooks
+# Let us run curl and jq in our hooks
 RUN set -x \
- && apk add --no-cache curl
+ && apk add --no-cache curl jq
 
 COPY sshd_config.d/*.conf /etc/ssh/sshd_config.d/
 
