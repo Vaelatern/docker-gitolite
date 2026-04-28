@@ -23,5 +23,5 @@ ENTRYPOINT ["/docker-entrypoint.sh"]
 # Expose port 22 to access SSH
 EXPOSE 22
 
-# Default command is to run the SSH server
-CMD ["/usr/sbin/sshd", "-D"]
+# Default command is to run the SSH server - with logging (INFO) to stdout
+CMD ["/usr/sbin/sshd", "-e", "-D"]
